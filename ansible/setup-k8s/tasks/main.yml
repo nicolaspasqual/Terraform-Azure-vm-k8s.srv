@@ -1,4 +1,0 @@
----
-# tasks file for setup-k8s
-- include: nginx.yml
-- include: packages.yml
