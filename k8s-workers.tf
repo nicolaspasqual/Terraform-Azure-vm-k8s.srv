@@ -1,5 +1,6 @@
-resource "azurerm_public_ip" "Worker1-public_ip" {
-  name                = "${var.env}-Worker1-IP"
+resource "azurerm_public_ip" "Worker-public_ip" {
+  count               = var.worker_count
+  name                = "${var.env}-Worker-${count.index}-IP"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   allocation_method   = "Dynamic"
@@ -7,14 +8,16 @@ resource "azurerm_public_ip" "Worker1-public_ip" {
   tags = local.tags
 }
 
-data "azurerm_public_ip" "Worker1-data_public_ip" {
-  name                = azurerm_public_ip.Worker1-public_ip.name
-  resource_group_name = azurerm_linux_virtual_machine.Worker1-ubuntu.resource_group_name
+data "azurerm_public_ip" "Worker-data_public_ip" {
+  count               = var.worker_count
+  name                = azurerm_public_ip.Worker-public_ip[count.index].name
+  resource_group_name = azurerm_linux_virtual_machine.Worker-ubuntu[count.index].resource_group_name
 }
 
 
-resource "azurerm_network_interface" "Worker1-net_interface" {
-  name                = "${var.env}-Worker1-nic"
+resource "azurerm_network_interface" "Worker-net_interface" {
+  count               = var.worker_count
+  name                = "${var.env}-Worker-${count.index}-nic"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 
@@ -22,20 +25,21 @@ resource "azurerm_network_interface" "Worker1-net_interface" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.Worker1-public_ip.id
+    public_ip_address_id          = azurerm_public_ip.Worker-public_ip[count.index].id
   }
 
   tags = local.tags
 }
 
 
-resource "azurerm_linux_virtual_machine" "Worker1-ubuntu" {
-  name                  = "${var.env}-Worker1"
+resource "azurerm_linux_virtual_machine" "Worker-ubuntu" {
+  count               = var.worker_count
+  name                  = "${var.env}-Worker-${count.index}"
   resource_group_name   = azurerm_resource_group.rg.name
   location              = var.location
   size                  = "Standard_B2s"
   admin_username        = "terraform"
-  network_interface_ids = [azurerm_network_interface.Worker1-net_interface.id]
+  network_interface_ids = [azurerm_network_interface.Worker-net_interface[count.index].id]
 
   admin_ssh_key {
     username   = "terraform"

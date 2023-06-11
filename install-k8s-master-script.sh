@@ -85,5 +85,4 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 
 # command to add new node
-kubeadm token create --print-join-command
-
+# kubeadm token create --print-join-command

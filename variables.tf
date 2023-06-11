@@ -4,6 +4,12 @@ variable "env" {
   default     = "k8s"
 }
 
+variable "worker_count" {
+  description = "Number of worker Virtual Machines"
+  default     = 3
+  type        = string
+}
+
 variable "location" {
   type        = string
   description = "Location to deploy the resource"
