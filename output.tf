@@ -14,10 +14,10 @@ output "nsg_id" {
   value = azurerm_network_security_group.nsg.id
 }
 
-output "public_ip_address_1" {
-  value = data.azurerm_public_ip.data_public_ip1.ip_address
+output "public_ip_address_master" {
+  value = data.azurerm_public_ip.Master-data_public_ip.ip_address
 }
 
-output "public_ip_address_2" {
-  value = data.azurerm_public_ip.data_public_ip2.ip_address
+output "public_ip_address_worker_1" {
+  value = data.azurerm_public_ip.Worker1-data_public_ip.ip_address
 }
