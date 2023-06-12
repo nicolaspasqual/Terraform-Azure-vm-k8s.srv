@@ -1,6 +1,6 @@
 <h1>Create kubernetes cluster on Azure VMs</h1> 
 
-> Status do Projeto: :heavy_check_mark: :warning: Concluido
+> Status do Projeto: :heavy_check_mark: Concluido
 
 ## Description 
 
@@ -20,9 +20,9 @@
 
 :heavy_check_mark: Create the public IPs on Azure
 
-:heavy_check_mark: Create the master node
+:heavy_check_mark: Create the master node on Azure
 
-:heavy_check_mark: Create the worker node
+:heavy_check_mark: Create the worker node on Azure
 
 ## Prerequisites
 
