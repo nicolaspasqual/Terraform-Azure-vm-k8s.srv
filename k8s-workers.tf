@@ -33,7 +33,8 @@ resource "azurerm_network_interface" "Worker-net_interface" {
 
 
 resource "azurerm_linux_virtual_machine" "Worker-ubuntu" {
-  count               = var.worker_count
+  depends_on            = [azurerm_linux_virtual_machine.Master-ubuntu]
+  count                 = var.worker_count
   name                  = "${var.env}-Worker-${count.index}"
   resource_group_name   = azurerm_resource_group.rg.name
   location              = var.location
@@ -43,7 +44,7 @@ resource "azurerm_linux_virtual_machine" "Worker-ubuntu" {
 
   admin_ssh_key {
     username   = "terraform"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = file(var.pub-key)
   }
 
   os_disk {
@@ -63,7 +64,7 @@ resource "azurerm_linux_virtual_machine" "Worker-ubuntu" {
   connection {
     type        = "ssh"
     user        = "terraform"
-    private_key = file("~/.ssh/id_rsa")
+    private_key = file(var.pv-key)
     host        = self.public_ip_address
   }
 
@@ -76,6 +77,18 @@ resource "azurerm_linux_virtual_machine" "Worker-ubuntu" {
     inline = [
       "chmod +x /tmp/script.sh",
       "/tmp/script.sh args",
+    ]
+  }
+
+  provisioner "file" {
+    source      = "join-cmd.sh"
+    destination = "/tmp/join-cmd.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/join-cmd.sh",
+      "sudo bash /tmp/join-cmd.sh args",
     ]
   }
 }

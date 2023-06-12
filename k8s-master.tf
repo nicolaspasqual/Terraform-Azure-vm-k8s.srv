@@ -39,7 +39,7 @@ resource "azurerm_linux_virtual_machine" "Master-ubuntu" {
 
   admin_ssh_key {
     username   = "terraform"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = file(var.pub-key)
   }
 
   os_disk {
@@ -59,7 +59,7 @@ resource "azurerm_linux_virtual_machine" "Master-ubuntu" {
   connection {
     type        = "ssh"
     user        = "terraform"
-    private_key = file("~/.ssh/id_rsa")
+    private_key = file(var.pv-key)
     host        = self.public_ip_address
   }
 
@@ -74,6 +74,9 @@ resource "azurerm_linux_virtual_machine" "Master-ubuntu" {
       "/tmp/script.sh args",
     ]
   }
+
+  provisioner "local-exec" {
+    command = "ssh -oStrictHostKeyChecking=no terraform@${self.public_ip_address} 'kubeadm token create --print-join-command' > join-cmd.sh"
+  }
+
 }
-
-

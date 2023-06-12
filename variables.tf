@@ -6,7 +6,7 @@ variable "env" {
 
 variable "worker_count" {
   description = "Number of worker Virtual Machines"
-  default     = 3
+  default     = 1
   type        = string
 }
 
